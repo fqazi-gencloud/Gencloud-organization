@@ -1,0 +1,5 @@
+run the following on cloudshell 
+
+aws s3 ls 
+aws s3 presign  (s3urlcopied) --expires-in 180
+/* for 180 seconds it get expires 
