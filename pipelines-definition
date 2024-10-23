@@ -1,0 +1,88 @@
+pipeline-definition.json
+
+
+{
+  "pipeline": {
+    "name": "MyPipeline",
+    "roleArn": "arn:aws:iam::YOUR_ACCOUNT_ID:role/YOUR_ROLE_NAME",
+    "artifactStore": {
+      "type": "S3",
+      "location": "your-artifact-bucket"
+    },
+    "stages": [
+      {
+        "name": "Source",
+        "actions": [
+          {
+            "name": "SourceAction",
+            "actionTypeId": {
+              "category": "Source",
+              "owner": "AWS",
+              "provider": "CodeCommit",
+              "version": "1"
+            },
+            "outputArtifacts": [
+              {
+                "name": "SourceOutput"
+              }
+            ],
+            "configuration": {
+              "RepositoryName": "your-repo-name",
+              "BranchName": "main"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Build",
+        "actions": [
+          {
+            "name": "BuildAction",
+            "actionTypeId": {
+              "category": "Build",
+              "owner": "AWS",
+              "provider": "CodeBuild",
+              "version": "1"
+            },
+            "inputArtifacts": [
+              {
+                "name": "SourceOutput"
+              }
+            ],
+            "outputArtifacts": [
+              {
+                "name": "BuildOutput"
+              }
+            ],
+            "configuration": {
+              "ProjectName": "your-build-project"
+            }
+          }
+        ]
+      },
+      {
+        "name": "Deploy",
+        "actions": [
+          {
+            "name": "DeployAction",
+            "actionTypeId": {
+              "category": "Deploy",
+              "owner": "AWS",
+              "provider": "ElasticBeanstalk",
+              "version": "1"
+            },
+            "inputArtifacts": [
+              {
+                "name": "BuildOutput"
+              }
+            ],
+            "configuration": {
+              "ApplicationName": "your-app-name",
+              "EnvironmentName": "your-env-name"
+            }
+          }
+        ]
+      }
+    ]
+  }
+}
